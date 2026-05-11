@@ -21,6 +21,7 @@ model Cohort {
   attendances        Attendance[]
   attendanceSessions AttendanceSession[]
   curriculum         Curriculum[]
+  payments           Payment[]
 }
 
 model Course {
@@ -37,6 +38,7 @@ model Course {
   assessments Assessment[]
   sessions    AttendanceSession[]
   curriculum  Curriculum[]
+  payments    Payment[]
 
   @@unique([name, cohortId])
 }
@@ -57,6 +59,7 @@ model User {
   submissions       Submission[]
   assessmentResults AssessmentResult[]
   attendances       Attendance[]
+  payment           Payment?
 }
 
 model Curriculum {
@@ -68,8 +71,8 @@ model Curriculum {
   description String?
   createdAt   DateTime @default(now())
 
-  course     Course     @relation(fields: [courseId], references: [id])
-  cohort     Cohort     @relation(fields: [cohortId], references: [id])
+  course     Course      @relation(fields: [courseId], references: [id])
+  cohort     Cohort      @relation(fields: [cohortId], references: [id])
   assignment Assignment?
   materials  Material[]
 
@@ -195,4 +198,34 @@ model AssessmentResult {
   assessment Assessment @relation(fields: [assessmentId], references: [id])
 
   @@unique([studentId, assessmentId])
+}
+
+model Payment {
+  id          String    @id @default(cuid())
+
+  studentId   String    @unique
+  cohortId    String
+  courseId    String
+
+  // PENDING | INSTALMENT_1_PAID | COMPLETED
+  status      String    @default("PENDING")
+
+  amountPaid  Float     @default(0)
+  monnifyRef  String?
+
+  pendingRef  String?
+  pendingType String?
+
+  lastPaidAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  student     User      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  cohort      Cohort    @relation(fields: [cohortId],  references: [id], onDelete: Cascade)
+  course      Course    @relation(fields: [courseId],  references: [id], onDelete: Cascade)
+
+  @@index([cohortId])
+  @@index([courseId])
+  @@index([status])
+  @@index([pendingRef])
 }
