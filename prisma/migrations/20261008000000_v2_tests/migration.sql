@@ -1,0 +1,3 @@
+-- AlterTable AITest
+ALTER TABLE "AITest" ADD COLUMN "questions" TEXT NOT NULL DEFAULT '[]';
+ALTER TABLE "AITest" ADD COLUMN "correctAnswers" TEXT NOT NULL DEFAULT '[]';

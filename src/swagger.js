@@ -45,6 +45,11 @@ export const swaggerSpec = {
     { name: 'Student — Attendance' },
     { name: 'Student — Grades' },
     { name: 'Payments' },
+    { name: 'V2 — Auth' },
+    { name: 'V2 — Courses' },
+    { name: 'V2 — Tests' },
+    { name: 'V2 — Leaderboard' },
+    { name: 'V2 — Admin' },
   ],
   paths: {
 
@@ -1003,5 +1008,342 @@ export const swaggerSpec = {
       },
     },
 
+    // ══ V2 — new intake ════════════════════════════════════════
+
+    // ── V2 Auth ───────────────────────────────────────────────
+    '/v2/auth/register': {
+      post: {
+        tags: ['V2 — Auth'],
+        summary: 'Register a new student (multipart: photo + expectation + course)',
+        requestBody: {
+          required: true,
+          content: {
+            'multipart/form-data': {
+              schema: {
+                type: 'object',
+                required: ['studentName', 'password', 'expectation', 'courseId', 'image'],
+                properties: {
+                  studentName: { type: 'string', example: 'ada.lovelace' },
+                  password:    { type: 'string', format: 'password', example: 'secret123' },
+                  expectation: { type: 'string', example: 'I want to ship my first dApp and land a web3 internship.' },
+                  courseId:    { type: 'string' },
+                  image:       { type: 'string', format: 'binary', description: 'Avatar photo, max 5MB' },
+                  cohortId:    { type: 'string', description: 'Defaults to the active intake' },
+                  fullName:    { type: 'string', description: 'Display name, defaults to studentName' },
+                  email:       { type: 'string', description: 'Optional — auto-generated when omitted' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          201: { description: '{ token, user }' },
+          400: { description: 'Validation error' },
+          409: { description: 'studentName or email already taken' },
+          429: { description: 'Rate limited' },
+        },
+      },
+    },
+    '/v2/auth/login': {
+      post: {
+        tags: ['V2 — Auth'],
+        summary: 'Login with studentName + password',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['studentName', 'password'],
+                properties: {
+                  studentName: { type: 'string', example: 'ada.lovelace' },
+                  password:    { type: 'string', format: 'password' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: '{ token, user }' },
+          401: { description: 'Invalid credentials' },
+          429: { description: 'Rate limited' },
+        },
+      },
+    },
+    '/v2/auth/me': {
+      get: {
+        tags: ['V2 — Auth'],
+        summary: 'Current student profile (expectation, photo, points, course)',
+        security: secured,
+        responses: { 200: { description: 'Profile object' }, 401: { description: 'No/invalid token' } },
+      },
+      patch: {
+        tags: ['V2 — Auth'],
+        summary: 'Update own profile (expectation, password, fullName, photo)',
+        security: secured,
+        requestBody: {
+          required: true,
+          content: {
+            'multipart/form-data': {
+              schema: {
+                type: 'object',
+                properties: {
+                  expectation: { type: 'string' },
+                  password:    { type: 'string', format: 'password' },
+                  fullName:    { type: 'string' },
+                  image:       { type: 'string', format: 'binary' },
+                },
+              },
+            },
+          },
+        },
+        responses: { 200: { description: '{ user }' }, 400: { description: 'Nothing to update' } },
+      },
+    },
+
+    // ── V2 Courses ────────────────────────────────────────────
+    '/v2/courses': {
+      get: {
+        tags: ['V2 — Courses'],
+        summary: 'Intake course catalogue (public — used by the register page)',
+        parameters: [
+          { name: 'cohortId', in: 'query', schema: { type: 'string' }, description: 'Defaults to the active intake' },
+        ],
+        responses: { 200: { description: '{ cohort, courses[] } with counts' } },
+      },
+    },
+    '/v2/courses/{id}': {
+      get: {
+        tags: ['V2 — Courses'],
+        summary: 'Course detail with counts + curriculum outline',
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: { 200: { description: 'Course object' }, 404: { description: 'Not found' } },
+      },
+    },
+    '/v2/courses/{id}/library': {
+      get: {
+        tags: ['V2 — Courses'],
+        summary: 'Course library — recordings + materials (enrolled students)',
+        security: secured,
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: {
+          200: { description: '{ course, recordings[], materials[] }' },
+          403: { description: 'Not enrolled in this course' },
+        },
+      },
+    },
+
+    // ── V2 Diagnostics / Tests ───────────────────────────────
+    '/v2/tests': {
+      get: {
+        tags: ['V2 — Tests'],
+        summary: 'Available knowledge tests for my course (student)',
+        security: secured,
+        responses: { 200: { description: 'Array of tests with taken/score flags' } },
+      },
+      post: {
+        tags: ['V2 — Tests'],
+        summary: 'Create a knowledge test (admin)',
+        security: secured,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['courseId', 'title', 'questions'],
+                properties: {
+                  courseId:    { type: 'string' },
+                  title:       { type: 'string', example: 'Knowledge Check — Solidity' },
+                  description: { type: 'string' },
+                  status:      { type: 'string', enum: ['PUBLISHED', 'DRAFT'], default: 'PUBLISHED' },
+                  opensAt:     { type: 'string', format: 'date-time' },
+                  closesAt:    { type: 'string', format: 'date-time' },
+                  questions: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        q:       { type: 'string' },
+                        options: { type: 'array', items: { type: 'string' } },
+                        answer:  { description: 'Correct option letter or index', type: 'string' },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: { 201: { description: 'Created test' }, 403: { description: 'Admins only / not your course' } },
+      },
+    },
+    '/v2/tests/{id}': {
+      get: {
+        tags: ['V2 — Tests'],
+        summary: 'Take a test — questions without answers (enrolled student)',
+        security: secured,
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: { 200: { description: '{ title, questions[], taken, score }' }, 403: { description: 'Not your course / closed' } },
+      },
+    },
+    '/v2/tests/{id}/submit': {
+      post: {
+        tags: ['V2 — Tests'],
+        summary: 'Submit answers (single attempt) → score + points',
+        security: secured,
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['answers'],
+                properties: { answers: { type: 'object', example: { '0': 'B', '1': 'A', '2': 'C' } } },
+              },
+            },
+          },
+        },
+        responses: { 201: { description: '{ score, total, points }' }, 409: { description: 'Already taken — one attempt only' } },
+      },
+    },
+    '/v2/admin/tests': {
+      get: {
+        tags: ['V2 — Tests'],
+        summary: 'List tests (admin; tutors see their own course)',
+        security: secured,
+        responses: { 200: { description: 'Array of tests with attempt counts' } },
+      },
+    },
+
+    // ── V2 Leaderboard ────────────────────────────────────────
+    '/v2/leaderboard': {
+      get: {
+        tags: ['V2 — Leaderboard'],
+        summary: 'Public leaderboard — ranked by points (no auth)',
+        parameters: [
+          { name: 'top', in: 'query', schema: { type: 'integer', default: 50 }, description: '1–200' },
+          { name: 'courseId', in: 'query', schema: { type: 'string' }, description: 'Filter by course' },
+        ],
+        responses: { 200: { description: '{ cohort, total, entries: [{rank, name, points, testsTaken}] }' } },
+      },
+    },
+
+    // ── V2 Admin ──────────────────────────────────────────────
+    '/v2/admin/courses': {
+      get: {
+        tags: ['V2 — Admin'],
+        summary: 'List courses (tutors see only their own)',
+        security: secured,
+        responses: { 200: { description: 'Array of courses with counts' } },
+      },
+      post: {
+        tags: ['V2 — Admin'],
+        summary: 'Create a course (super admin; multipart when image supplied)',
+        security: secured,
+        requestBody: {
+          required: true,
+          content: {
+            'multipart/form-data': {
+              schema: {
+                type: 'object',
+                required: ['name'],
+                properties: {
+                  name:          { type: 'string', example: 'Solidity Foundations' },
+                  description:   { type: 'string' },
+                  level:         { type: 'string', example: 'Beginner' },
+                  durationWeeks: { type: 'integer', example: 8 },
+                  cohortId:      { type: 'string', description: 'Defaults to the active intake' },
+                  image:         { type: 'string', format: 'binary' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          201: { description: 'Created course' },
+          403: { description: 'Super admin only' },
+          409: { description: 'Duplicate course name in this intake' },
+        },
+      },
+    },
+    '/v2/admin/courses/{id}': {
+      patch: {
+        tags: ['V2 — Admin'],
+        summary: 'Update course details (super admin)',
+        security: secured,
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: { 200: { description: 'Updated course' }, 403: { description: 'Super admin only' } },
+      },
+      delete: {
+        tags: ['V2 — Admin'],
+        summary: 'Delete course and its Cloudinary assets (super admin)',
+        security: secured,
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: { 200: { description: 'Deleted' }, 403: { description: 'Super admin only' } },
+      },
+    },
+    '/v2/admin/courses/{id}/materials': {
+      get: {
+        tags: ['V2 — Admin'],
+        summary: 'List course materials/recordings',
+        security: secured,
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: { 200: { description: 'Array of materials' }, 403: { description: 'Not your course' } },
+      },
+      post: {
+        tags: ['V2 — Admin'],
+        summary: 'Upload a material or recording (multipart)',
+        security: secured,
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        requestBody: {
+          required: true,
+          content: {
+            'multipart/form-data': {
+              schema: {
+                type: 'object',
+                required: ['title', 'file'],
+                properties: {
+                  title:        { type: 'string', example: 'Week 1 — Setup & tooling' },
+                  file:         { type: 'string', format: 'binary', description: 'Max 50MB' },
+                  category:     { type: 'string', enum: ['MATERIAL', 'RECORDING'], default: 'MATERIAL' },
+                  description:  { type: 'string' },
+                  curriculumId: { type: 'string', description: 'Attach to a curriculum week' },
+                },
+              },
+            },
+          },
+        },
+        responses: { 201: { description: 'Created material' }, 403: { description: 'Not your course' } },
+      },
+    },
+    '/v2/admin/materials/{id}': {
+      delete: {
+        tags: ['V2 — Admin'],
+        summary: 'Delete a material and its Cloudinary asset',
+        security: secured,
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: { 200: { description: 'Deleted' }, 403: { description: 'Not your course' } },
+      },
+    },
+
   },
+}
+
+// V2-only view of the spec (new intake) — served at /v2/docs
+export const v2SwaggerSpec = {
+  ...swaggerSpec,
+  info: {
+    title: 'Web3Nova V2 API',
+    version: '2.0.0',
+    description:
+      'Web3Nova V2 — new intake. Register with studentName + photo + course choice, ' +
+      'login with studentName, then courses and course library (recordings & materials). ' +
+      'Click **Authorize** and paste your JWT for the protected endpoints.',
+  },
+  tags: swaggerSpec.tags.filter(t => t.name.startsWith('V2')),
+  paths: Object.fromEntries(
+    Object.entries(swaggerSpec.paths).filter(([path]) => path.startsWith('/v2'))
+  ),
 }

@@ -22,13 +22,20 @@ model Cohort {
   attendanceSessions AttendanceSession[]
   curriculum         Curriculum[]
   payments           Payment[]
+  teachings          Teaching[]
+  aiTests            AITest[]
 }
 
 model Course {
-  id        String   @id @default(cuid())
-  name      String
-  cohortId  String
-  createdAt DateTime @default(now())
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  imageUrl      String?
+  imagePublicId String?
+  level         String?
+  durationWeeks Int?
+  cohortId      String
+  createdAt     DateTime @default(now())
 
   cohort      Cohort              @relation(fields: [cohortId], references: [id])
   admins      User[]              @relation("CourseAdmins")
@@ -39,19 +46,34 @@ model Course {
   sessions    AttendanceSession[]
   curriculum  Curriculum[]
   payments    Payment[]
+  teachings   Teaching[]
+  aiTests     AITest[]
+  certificates Certificate[]
+  enrollments Enrollment[]
 
   @@unique([name, cohortId])
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      String   @default("STUDENT")
-  cohortId  String?
-  courseId  String?
-  createdAt DateTime @default(now())
+  id              String   @id @default(cuid())
+  name            String
+  email           String   @unique
+  password        String
+  role            String   @default("STUDENT")
+  studentName     String?  @unique
+  imageUrl        String?
+  imagePublicId   String?
+  expectation     String?
+  points          Int      @default(0)
+  cohortId        String?
+  courseId        String?
+  createdAt       DateTime @default(now())
+
+  // V2 first-login onboarding
+  onboardedAt        DateTime? // finished the welcome story; first test unlocks 24h later
+  profileCompletedAt DateTime? // created their profile during onboarding (bonus claimed)
+  profileBonus       Int?      // points awarded for the profile step (200 first 10 / 150 rest)
+  gender             String?   // MALE | FEMALE — picks the welcome anthem
 
   cohort            Cohort?            @relation(fields: [cohortId], references: [id])
   adminCourse       Course?            @relation("CourseAdmins", fields: [courseId], references: [id])
@@ -60,6 +82,11 @@ model User {
   assessmentResults AssessmentResult[]
   attendances       Attendance[]
   payment           Payment?
+  testAttempts      AITestAttempt[]
+  certificates      Certificate[]
+  enrollments       Enrollment[]
+  taskProofs        TaskProof[]       @relation("ProofStudent")
+  reviewedProofs    TaskProof[]       @relation("ProofReviewer")
 }
 
 model Curriculum {
@@ -82,9 +109,11 @@ model Curriculum {
 model Material {
   id            String   @id @default(cuid())
   title         String
+  description   String?
   cloudinaryUrl String
   publicId      String
   type          String
+  category      String   @default("MATERIAL")
   cohortId      String
   courseId      String
   curriculumId  String?
@@ -217,4 +246,105 @@ model Payment {
   student User   @relation(fields: [studentId], references: [id])
   cohort  Cohort @relation(fields: [cohortId], references: [id])
   course  Course @relation(fields: [courseId], references: [id])
+}
+
+// ── V2 (new intake) ────────────────────────────────────────────
+
+model Teaching {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  startsAt    DateTime
+  endsAt      DateTime
+  meetingUrl  String?
+  status      String   @default("SCHEDULED")
+  cohortId    String
+  courseId    String
+  createdAt   DateTime @default(now())
+
+  cohort Cohort @relation(fields: [cohortId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+}
+
+model AITest {
+  id             String   @id @default(cuid())
+  title          String
+  description    String?
+  questions      String   @default("[]")
+  correctAnswers String   @default("[]")
+  maxScore       Int      @default(100)
+  status         String   @default("PUBLISHED")
+  opensAt        DateTime?
+  closesAt       DateTime?
+  cohortId       String
+  courseId       String
+  createdAt      DateTime @default(now())
+
+  cohort   Cohort          @relation(fields: [cohortId], references: [id])
+  course   Course          @relation(fields: [courseId], references: [id])
+  attempts AITestAttempt[]
+}
+
+model AITestAttempt {
+  id          String    @id @default(cuid())
+  testId      String
+  studentId   String
+  answers     String?
+  score       Int?
+  feedback    String?
+  submittedAt DateTime  @default(now())
+
+  test    AITest @relation(fields: [testId], references: [id])
+  student User   @relation(fields: [studentId], references: [id])
+
+  @@unique([testId, studentId])
+}
+
+model Certificate {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  status    String   @default("ISSUED")
+  issuedAt  DateTime @default(now())
+  studentId String
+  courseId  String
+
+  student User   @relation(fields: [studentId], references: [id])
+  course  Course @relation(fields: [courseId], references: [id])
+
+  @@unique([studentId, courseId])
+}
+
+// Extra courses a V2 student joined during onboarding (their main course stays User.courseId)
+model Enrollment {
+  id        String   @id @default(cuid())
+  studentId String
+  courseId  String
+  createdAt DateTime @default(now())
+
+  student User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseId])
+}
+
+// Proof a student completed a bonus task (e.g. invited friends to the boot camp); points on admin approval
+model TaskProof {
+  id            String    @id @default(cuid())
+  studentId     String
+  task          String    @default("INVITE_FRIENDS")
+  imageUrl      String
+  imagePublicId String?
+  note          String?
+  status        String    @default("PENDING") // PENDING | APPROVED | REJECTED
+  points        Int       @default(0)
+  reviewNote    String?
+  reviewedById  String?
+  reviewedAt    DateTime?
+  createdAt     DateTime  @default(now())
+
+  student    User  @relation("ProofStudent", fields: [studentId], references: [id], onDelete: Cascade)
+  reviewedBy User? @relation("ProofReviewer", fields: [reviewedById], references: [id])
+
+  @@index([status])
+  @@index([studentId, task])
 }

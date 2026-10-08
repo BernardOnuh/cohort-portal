@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon index.js",
     "migrate": "node scripts/migrate.js",
-    "test": "node --test tests/logic.test.js"
+    "test": "node --test"
   },
   "keywords": [],
   "author": "",

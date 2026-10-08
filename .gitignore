@@ -1,5 +1,10 @@
 node_modules
 .env
-.env.example
 dist
 coverage
+
+# Intake import data — plaintext passwords + student names/emails/phones. Never commit.
+scripts/data/
+
+# local SQLite scratch files
+db-wal
