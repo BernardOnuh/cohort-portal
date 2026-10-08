@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "postinstall": "prisma generate",
+    "build": "prisma generate",
     "migrate": "node scripts/migrate.js",
     "test": "node --test"
   },
