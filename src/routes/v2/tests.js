@@ -4,6 +4,7 @@ import { authenticate, requireStudent } from '../../middleware/auth.js'
 import { scoreMCQ } from '../../services/mcq-score.js'
 import { enrolledCourseIds, isEnrolled } from '../../services/v2-enrollment.js'
 import { firstTestGate } from '../../services/v2-onboarding.js'
+import { FINAL_KIND, DEFAULT_SECONDS_PER_QUESTION } from '../../services/v2-exam.js'
 
 const router = Router()
 
@@ -61,6 +62,9 @@ router.post('/admin/tests', authenticate, async (req, res) => {
     if (parsed.error) return res.status(400).json({ error: parsed.error })
 
     const maxScore = Number.parseInt(req.body.maxScore, 10) || 100
+    // FINAL = course final test (timed, one question at a time, plus a practical) — taken via /v2/exams
+    const isFinal = req.body.kind === FINAL_KIND
+    const secondsPerQuestion = Number.parseInt(req.body.secondsPerQuestion, 10)
 
     const test = await prisma.aITest.create({
       data: {
@@ -70,6 +74,9 @@ router.post('/admin/tests', authenticate, async (req, res) => {
         correctAnswers: JSON.stringify(parsed.correctAnswers),
         maxScore,
         status: status === 'DRAFT' ? 'DRAFT' : 'PUBLISHED',
+        kind: isFinal ? FINAL_KIND : 'KNOWLEDGE_CHECK',
+        secondsPerQuestion: isFinal ? (secondsPerQuestion > 0 ? secondsPerQuestion : DEFAULT_SECONDS_PER_QUESTION) : null,
+        practicalPrompt: isFinal && req.body.practicalPrompt ? String(req.body.practicalPrompt).trim() : null,
         cohortId: course.cohortId,
         courseId,
         opensAt: req.body.opensAt ? new Date(req.body.opensAt) : null,
@@ -113,6 +120,7 @@ router.get('/', async (req, res) => {
         cohortId: req.user.cohortId,
         courseId: { in: courseIds },
         status: 'PUBLISHED',
+        kind: { not: FINAL_KIND },
         AND: [
           { OR: [{ opensAt: null }, { opensAt: { lte: now } }] },
           { OR: [{ closesAt: null }, { closesAt: { gte: now } }] },
@@ -149,7 +157,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const test = await prisma.aITest.findUnique({ where: { id: req.params.id } })
-    if (!test) return res.status(404).json({ error: 'Test not found' })
+    if (!test || test.kind === FINAL_KIND) return res.status(404).json({ error: 'Test not found' })
     if (!(await isEnrolled(req.user, test.courseId))) return res.status(403).json({ error: 'Not your course' })
     if (test.status !== 'PUBLISHED') return res.status(403).json({ error: 'Test is not published' })
 
@@ -188,7 +196,7 @@ router.get('/:id', async (req, res) => {
 router.post('/:id/submit', async (req, res) => {
   try {
     const test = await prisma.aITest.findUnique({ where: { id: req.params.id } })
-    if (!test) return res.status(404).json({ error: 'Test not found' })
+    if (!test || test.kind === FINAL_KIND) return res.status(404).json({ error: 'Test not found' })
     if (!(await isEnrolled(req.user, test.courseId))) return res.status(403).json({ error: 'Not your course' })
     if (test.status !== 'PUBLISHED') return res.status(403).json({ error: 'Test is not published' })
 

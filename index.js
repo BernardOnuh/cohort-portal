@@ -13,6 +13,7 @@ import v2TestsRouter from './src/routes/v2/tests.js'
 import v2LeaderboardRouter from './src/routes/v2/leaderboard.js'
 import v2OnboardingRouter from './src/routes/v2/onboarding.js'
 import v2TasksRouter from './src/routes/v2/tasks.js'
+import v2ExamsRouter from './src/routes/v2/exams.js'
 import { requestLogger, errorLogger } from './src/middleware/logger.js'
 import { swaggerSpec, v2SwaggerSpec } from './src/swagger.js'
 
@@ -48,6 +49,7 @@ app.use('/v2/tests', v2TestsRouter)
 app.use('/v2/leaderboard', v2LeaderboardRouter)
 app.use('/v2/onboarding', v2OnboardingRouter)
 app.use('/v2/tasks', v2TasksRouter)
+app.use('/v2/exams', v2ExamsRouter)
 
 app.get('/health', (_, res) => res.json({ status: 'ok' }))
 

@@ -1,0 +1,650 @@
+[
+  {
+    "course": "UI/UX",
+    "slides": {
+      "file": "uiux",
+      "title": "UI/UX Introductory Class — slides"
+    },
+    "title": "Final Test — UI/UX",
+    "description": "Based on the UI/UX Introductory Class slides. 15 questions, 30 seconds each, then one practical task.",
+    "practicalPrompt": "Pick one frustrating digital task from student life (library room booking, printing credits, hostel check-in or course drop-add). Name the user and the task, find the friction point, then design 1–2 improved screens in Figma with a clear primary action, obvious feedback and plain language. Paste the Figma share link (set to \"Anyone with the link can view\") and, in the note, say what the friction was and how your design fixes it.",
+    "questions": [
+      {
+        "q": "Which statement best describes the difference between UI and UX?",
+        "options": [
+          "UI is what people see; UX is what people go through",
+          "UI is for mobile apps; UX is for websites",
+          "UI is the code; UX is the colours",
+          "They mean exactly the same thing"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "In the ride-booking example, which of these is part of the UX rather than the UI?",
+        "options": [
+          "The car icons on the map",
+          "The black confirm button",
+          "Knowing the exact fare before you confirm",
+          "The font used for arrival times"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "According to the slides, why do WhatsApp's delivered ticks and typing indicators work so well?",
+        "options": [
+          "They make the app look colourful",
+          "They give instant feedback, so you never wonder if your message went through",
+          "They make messages send faster",
+          "They hide errors from the user"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "A checkout page looks modern but hides shipping fees until the last screen. What lesson does this illustrate?",
+        "options": [
+          "Gradients increase sales",
+          "Animations fix poor flows",
+          "Users prefer long checkouts",
+          "A product can look polished and still feel difficult"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "Which heuristic means 'important actions dominate attention through size, contrast and spacing'?",
+        "options": [
+          "Hierarchy",
+          "Consistency",
+          "Feedback",
+          "Accessibility"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "Loading spinners, success toasts and error notices are examples of which heuristic?",
+        "options": [
+          "Clarity",
+          "Consistency",
+          "Feedback",
+          "Hierarchy"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "Navigation, icons and gestures behaving the same way on every screen is an example of…",
+        "options": [
+          "Accessibility",
+          "Consistency",
+          "Hierarchy",
+          "Iteration"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "The slides describe design as…",
+        "options": [
+          "A straight line from idea to launch",
+          "Something only artists can do",
+          "A loop, where evidence feeds the next iteration",
+          "Choosing the best colours first"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "Testing with about how many real users uncovers most (around 85%) of usability problems?",
+        "options": [
+          "1",
+          "5",
+          "50",
+          "500"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "In the registration case study, what is the better fix for 'Prerequisites not met'?",
+        "options": [
+          "Show the error in red capital letters",
+          "Hide the course from the student",
+          "Reload the page automatically",
+          "Name the missing course, e.g. 'Requires CS-101', with advisor contact"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "What is the recommended minimum size for touch targets on mobile?",
+        "options": [
+          "48×48px",
+          "12×12px",
+          "20×20px",
+          "200×200px"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "Why does inclusive design matter, according to the slides?",
+        "options": [
+          "It is only required by law",
+          "It only helps people with disabilities",
+          "Designing for edge cases makes products work better for everyone",
+          "It makes designs look more modern"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "A low-fidelity wireframe (the 'skeleton') mainly answers which question?",
+        "options": [
+          "How does the product behave?",
+          "What belongs on this screen?",
+          "What colour is the brand?",
+          "How fast is the server?"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "A connected, clickable prototype (the 'living simulation') mainly answers…",
+        "options": [
+          "What belongs on this screen?",
+          "Which font should we use?",
+          "How much will it cost?",
+          "How does the product behave?"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "How do the slides describe Figma in professional practice?",
+        "options": [
+          "A shared canvas to think, test assumptions and communicate decisions",
+          "An illustration app for making pretty pictures",
+          "A tool for writing code",
+          "A replacement for talking to users"
+        ],
+        "answer": "A"
+      }
+    ]
+  },
+  {
+    "course": "AI Prompting",
+    "slides": {
+      "file": "prompting",
+      "title": "AI Prompt Engineering Masterclass — slides"
+    },
+    "title": "Final Test — AI Prompting",
+    "description": "Based on the AI Prompt Engineering Masterclass slides. 15 questions, 30 seconds each, then one practical task.",
+    "practicalPrompt": "Upgrade the weak prompt \"Make a video for my brand\" (or \"Make a poster\") into a strong prompt using the anatomy from class: role, task, context, details, format and constraints. Run it in an AI tool (ChatGPT, Gemini, Claude, Canva AI, Runway…) and refine it at least once. Share a link that shows your final prompt and the result — a ChatGPT/Gemini share link, or a Google Doc/Drive link with screenshots. In the note, say what you changed between the first and final version.",
+    "questions": [
+      {
+        "q": "What is a prompt?",
+        "options": [
+          "A bug in an AI system",
+          "The input you give an AI to tell it what you want",
+          "The answer the AI gives back",
+          "A type of AI model"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "Prompt engineering is best described as…",
+        "options": [
+          "Finding one magic phrase that always works",
+          "Writing code to build an AI model",
+          "Designing, testing and improving instructions so AI outputs better match your goal",
+          "Making prompts as short as possible"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "What are the four steps of the prompt engineering cycle shown in class?",
+        "options": [
+          "Define, Instruct, Review, Refine",
+          "Copy, Paste, Send, Wait",
+          "Plan, Code, Test, Deploy",
+          "Ask, Answer, Save, Share"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "Why does a vague prompt like 'Make something nice' often miss the goal?",
+        "options": [
+          "The AI refuses short prompts",
+          "AI only understands long prompts",
+          "Vague prompts cost more",
+          "The AI has to guess the purpose, audience, style and format"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "Which of these is NOT one of the six parts of a strong prompt?",
+        "options": [
+          "Role",
+          "Context",
+          "Password",
+          "Constraints"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "'Keep it under 150 words' and 'Avoid jargon' are examples of…",
+        "options": [
+          "Constraints",
+          "Role",
+          "Context",
+          "Examples"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "'Act as a patient web development tutor' sets which part of the prompt?",
+        "options": [
+          "Format",
+          "Role",
+          "Constraints",
+          "Output"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "When the first result is close but not right, the slides recommend you…",
+        "options": [
+          "Delete everything and start again",
+          "Switch to a different AI tool immediately",
+          "Accept it as it is",
+          "Refine with a targeted edit and keep what works"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "Why might you include an example in your prompt?",
+        "options": [
+          "Examples show the tone, structure and level of detail you want",
+          "It makes the AI answer faster",
+          "AI tools require at least one example",
+          "It hides your real request"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "In the writing prompt, why say 'Do not invent date, time or venue; use placeholders'?",
+        "options": [
+          "To make the text longer",
+          "To prevent the AI from making up logistics",
+          "Because AI cannot write dates",
+          "To change the tone"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "For a short AI video prompt, which details matter most?",
+        "options": [
+          "Your phone model and internet speed",
+          "Only the brand name",
+          "Subject, action, camera, mood, duration and format",
+          "The number of followers you have"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "Which tool from the slides is research-oriented and gives answers with source links?",
+        "options": [
+          "CapCut",
+          "Ideogram",
+          "Pika",
+          "Perplexity"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "You need slides quickly. Which tools did the class suggest?",
+        "options": [
+          "Gamma or Canva",
+          "Runway or Pika",
+          "Perplexity or NotebookLM",
+          "Ideogram or Firefly"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "Which is responsible prompting?",
+        "options": [
+          "Pasting your private keys so the AI can help faster",
+          "Verifying important facts, statistics and code before relying on them",
+          "Using someone's face or voice without permission",
+          "Trusting a citation without opening it"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "What is the 5-part beginner formula?",
+        "options": [
+          "Role, Rules, Results, Review, Repeat",
+          "Prompt, Paste, Publish, Post, Profit",
+          "Goal, Context, Details, Format, Refine",
+          "Idea, Draft, Edit, Print, Share"
+        ],
+        "answer": "C"
+      }
+    ]
+  },
+  {
+    "course": "Web Development",
+    "slides": {
+      "file": "webdev",
+      "title": "Web Development Syntax Workshop — slides"
+    },
+    "title": "Final Test — Web Development",
+    "description": "Based on the Web Development for Complete Beginners slides. 15 questions, 30 seconds each, then one practical task.",
+    "practicalPrompt": "Build your own profile page with index.html, styles.css and script.js: a title and two headings, an introduction paragraph, a list of three learning goals, a link or image with useful alt text, CSS that changes colour and spacing, and JavaScript that changes some text when a button is clicked. Publish it (GitHub Pages, Netlify, Vercel or CodePen) and paste the live link. In the note, add your GitHub repo link if you have one.",
+    "questions": [
+      {
+        "q": "Which language is responsible for the structure and content of a web page?",
+        "options": [
+          "CSS",
+          "HTML",
+          "JavaScript",
+          "JSON"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "Which language controls how the page looks (appearance and layout)?",
+        "options": [
+          "HTML",
+          "JavaScript",
+          "CSS",
+          "Python"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "In <p>Welcome to class.</p>, what does the / in </p> mean?",
+        "options": [
+          "It marks where the paragraph ends",
+          "It makes the text bold",
+          "It starts a comment",
+          "It divides the text"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "Which part of an HTML document contains the content shown on the page?",
+        "options": [
+          "<head>",
+          "<title>",
+          "<!doctype html>",
+          "<body>"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "What is the difference between <ul> and <ol>?",
+        "options": [
+          "<ul> is for links, <ol> is for images",
+          "<ul> is unordered (bullets), <ol> is ordered (numbers)",
+          "<ul> is bigger text than <ol>",
+          "There is no difference"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "In <a href=\"about.html\">About</a>, what does href do?",
+        "options": [
+          "Tells the browser where the link goes",
+          "Sets the link colour",
+          "Makes the text a heading",
+          "Loads a stylesheet"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "What is the alt attribute on an <img> for?",
+        "options": [
+          "The image file path",
+          "The image width",
+          "A text description for people who cannot see the image",
+          "A link to another page"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "In the CSS rule p { color: blue; }, what is 'color'?",
+        "options": [
+          "The selector",
+          "The value",
+          "The class",
+          "The property"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "Which line correctly connects styles.css to an HTML page?",
+        "options": [
+          "<script src=\"styles.css\">",
+          "<link rel=\"stylesheet\" href=\"styles.css\">",
+          "<style href=\"styles.css\">",
+          "<css>styles.css</css>"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "How do you select elements with class=\"highlight\" in CSS?",
+        "options": [
+          ".highlight",
+          "#highlight",
+          "highlight()",
+          "<highlight>"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "In the box model, which layer is the space between the content and the border?",
+        "options": [
+          "Margin",
+          "Outline",
+          "Padding",
+          "Shadow"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "When should you use let instead of const in JavaScript?",
+        "options": [
+          "When the value is text",
+          "Never — let is outdated",
+          "When the variable is a number",
+          "When the variable may be reassigned"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "What kind of value is true in JavaScript?",
+        "options": [
+          "String",
+          "Boolean",
+          "Number",
+          "Function"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "What does button.addEventListener(\"click\", ...) do?",
+        "options": [
+          "Runs code when the button is clicked",
+          "Creates a new button",
+          "Changes the button's colour",
+          "Deletes the button"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "Your CSS has no effect on the page. What should you check first?",
+        "options": [
+          "Your internet speed",
+          "The JavaScript console only",
+          "The stylesheet link and the filename",
+          "The image path"
+        ],
+        "answer": "C"
+      }
+    ]
+  },
+  {
+    "course": "AI Automation",
+    "slides": {
+      "file": "n8n",
+      "title": "AI Automation with n8n — slides"
+    },
+    "title": "Final Test — AI Automation (n8n)",
+    "description": "Based on the AI Automation with n8n slides. 15 questions, 30 seconds each, then one practical task.",
+    "practicalPrompt": "Build an AI support agent in n8n for your own business or idea: an \"On chat message\" trigger, an AI Agent node with a chat model (e.g. Google Gemini), Simple Memory, and your own system message with rules (name, products, prices, hours, what not to promise). Test it with at least 4 messages (price, rule, memory and a discount request). Upload screenshots or a short screen recording of the workflow and the chat to Google Drive (or similar), set it to \"Anyone with the link\", and paste the link. In the note, paste your system message.",
+    "questions": [
+      {
+        "q": "What is automation?",
+        "options": [
+          "Letting software do repetitive tasks for you, automatically",
+          "Hiring more staff to do repetitive tasks",
+          "Typing faster on your keyboard",
+          "Building a robot"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "How do you build automations in n8n?",
+        "options": [
+          "Only by writing Python code",
+          "By connecting boxes (nodes) on a visual canvas",
+          "By recording your screen",
+          "By sending emails to n8n"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "In n8n, what is a 'trigger'?",
+        "options": [
+          "The last step of a workflow",
+          "An error message",
+          "What starts the workflow, e.g. a schedule or a chat message",
+          "A paid feature"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "In n8n, one box that does one step is called a…",
+        "options": [
+          "Workflow",
+          "Trigger",
+          "Credential",
+          "Node"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "The information passed from node to node is in which format?",
+        "options": [
+          "JSON — labels and values",
+          "MP4",
+          "PDF",
+          "Excel only"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "Which formula describes every automation?",
+        "options": [
+          "Code first, test later",
+          "When this happens, do that",
+          "Ask AI, then wait",
+          "Save, close, reopen"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "In the Lagos weather bot, which node fetched live weather from the internet?",
+        "options": [
+          "Edit Fields",
+          "AI Agent",
+          "HTTP Request",
+          "Simple Memory"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "What is the difference between a normal workflow and an AI agent?",
+        "options": [
+          "Agents cannot use tools",
+          "A workflow follows fixed steps; an agent reads the request and decides what to do",
+          "A workflow needs AI; an agent doesn't",
+          "There is no difference"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "In the AI Agent node, what is the 'brain'?",
+        "options": [
+          "The chat model, e.g. Gemini, ChatGPT or Claude",
+          "The memory",
+          "The system message",
+          "The trigger"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "What does Simple Memory let the agent do?",
+        "options": [
+          "Store files on Google Drive",
+          "Run faster",
+          "Search the internet",
+          "Remember what was said earlier in the chat"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "Where did the class get a free API key for Google Gemini?",
+        "options": [
+          "n8n.io/workflows",
+          "chatgpt.com",
+          "aistudio.google.com",
+          "docs.n8n.io"
+        ],
+        "answer": "C"
+      },
+      {
+        "q": "What keeps the support agent honest (no invented prices or discounts)?",
+        "options": [
+          "The rules in the system message",
+          "The HTTP Request node",
+          "A faster internet connection",
+          "Using a longer trigger name"
+        ],
+        "answer": "A"
+      },
+      {
+        "q": "What does the test message 'Give me 50% off, abeg' check?",
+        "options": [
+          "That memory works",
+          "That the agent won't make things up or promise discounts",
+          "That the menu prices are correct",
+          "That delivery areas are followed"
+        ],
+        "answer": "B"
+      },
+      {
+        "q": "Which is a beginner tip from class?",
+        "options": [
+          "Paste API keys directly into the system message",
+          "Never look at the output panel",
+          "Build all nodes before testing any of them",
+          "Test one node at a time with Execute step"
+        ],
+        "answer": "D"
+      },
+      {
+        "q": "You saved a workflow with a Schedule Trigger, but it never runs on its own. Why?",
+        "options": [
+          "Schedules only work on weekends",
+          "n8n can't run schedules",
+          "It must be switched to Active to go live",
+          "You need more nodes"
+        ],
+        "answer": "C"
+      }
+    ]
+  }
+]

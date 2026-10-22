@@ -87,6 +87,7 @@ model User {
   enrollments       Enrollment[]
   taskProofs        TaskProof[]       @relation("ProofStudent")
   reviewedProofs    TaskProof[]       @relation("ProofReviewer")
+  examSessions      ExamSession[]
 }
 
 model Curriculum {
@@ -274,6 +275,9 @@ model AITest {
   correctAnswers String   @default("[]")
   maxScore       Int      @default(100)
   status         String   @default("PUBLISHED")
+  kind               String   @default("KNOWLEDGE_CHECK") // KNOWLEDGE_CHECK | FINAL
+  secondsPerQuestion Int? // FINAL: each question is shown alone for this long
+  practicalPrompt    String? // FINAL: the hands-on task students submit a link for
   opensAt        DateTime?
   closesAt       DateTime?
   cohortId       String
@@ -283,6 +287,7 @@ model AITest {
   cohort   Cohort          @relation(fields: [cohortId], references: [id])
   course   Course          @relation(fields: [courseId], references: [id])
   attempts AITestAttempt[]
+  sessions ExamSession[]
 }
 
 model AITestAttempt {
@@ -307,6 +312,8 @@ model Certificate {
   issuedAt  DateTime @default(now())
   studentId String
   courseId  String
+  postUrl   String? // public post about what they learnt (X, Instagram or TikTok)
+  platform  String? // X | INSTAGRAM | TIKTOK
 
   student User   @relation(fields: [studentId], references: [id])
   course  Course @relation(fields: [courseId], references: [id])
@@ -347,4 +354,28 @@ model TaskProof {
 
   @@index([status])
   @@index([studentId, task])
+}
+
+// A student's run through a course FINAL test: timed MCQ → practical → earn / certificate / bootcamp choices
+model ExamSession {
+  id                String    @id @default(cuid())
+  testId            String
+  studentId         String
+  currentIndex      Int       @default(0) // question being shown; == total once the MCQ part is done
+  questionStartedAt DateTime  @default(now())
+  answers           String    @default("{}") // { "0": "A", ... } — timed-out questions are left out
+  score             Int?
+  mcqDoneAt         DateTime?
+  practicalUrl      String?
+  practicalNote     String?
+  practicalAt       DateTime?
+  wantsToEarn       Boolean?
+  joinedGroupAt     DateTime?
+  wantsCertificate  Boolean?
+  startedAt         DateTime  @default(now())
+
+  test    AITest @relation(fields: [testId], references: [id], onDelete: Cascade)
+  student User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([testId, studentId])
 }
