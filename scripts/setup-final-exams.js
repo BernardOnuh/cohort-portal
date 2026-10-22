@@ -4,6 +4,8 @@
 //   node scripts/setup-final-exams.js --slides <dir> --apply    # writes to TURSO_DATABASE_URL + uploads to Cloudinary
 //
 // <dir> holds <file>.pdf and <file>.pptx for every "slides.file" in final-exams.json.
+// PDFs are served by the website (web3-nova-academy/public/slides/web3nova-<file>.pdf) because this
+// Cloudinary account blocks PDF delivery; only the .pptx is uploaded.
 // Safe to re-run: existing tests (matched by course + title) and slides (matched by title) are skipped.
 import { readFileSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -27,7 +29,7 @@ const LETTERS = 'ABCDEFGHIJ'
 const exams = JSON.parse(readFileSync(join(__dirname, 'final-exams.json'), 'utf8'))
 
 const SLIDE_FORMATS = [
-  { ext: 'pdf', label: 'PDF — read on your phone', type: 'pdf' },
+  { ext: 'pdf', label: 'PDF — read on your phone', type: 'pdf', staticPath: file => `/slides/web3nova-${file}.pdf` },
   { ext: 'pptx', label: 'PowerPoint — download', type: 'slides' },
 ]
 
@@ -79,8 +81,20 @@ for (const exam of exams) {
       console.log(`  = slides: "${title}" already in the library`)
       continue
     }
-    if (!existsSync(file)) { console.log(`  ✗ slides: ${file} not found`); continue }
     console.log(`  + slides: "${title}"`)
+    if (fmt.staticPath) {
+      const path = fmt.staticPath(exam.slides.file)
+      if (APPLY) {
+        await prisma.material.create({
+          data: {
+            title, description: fmt.label, category: 'MATERIAL', type: fmt.type,
+            cloudinaryUrl: path, publicId: `static${path}`, cohortId: course.cohortId, courseId: course.id,
+          },
+        })
+      }
+      continue
+    }
+    if (!existsSync(file)) { console.log(`  ✗ slides: ${file} not found`); continue }
     if (!APPLY) continue
     const uploaded = await uploadBuffer(readFileSync(file), {
       folder: 'web3nova/v2/materials',
