@@ -4,6 +4,7 @@
 //   node scripts/student-admin.js reset <userId>                              dry run: shows what would be wiped
 //   node scripts/student-admin.js reset <userId> --confirm                    wipes it
 //   node scripts/student-admin.js create-test <studentName> [courseName]      dummy student with a random password
+//                                     … [--all-courses]                       also enrolls it in every other course of the intake
 //   node scripts/student-admin.js delete-test <userId>                        removes a dummy student entirely
 //
 // A reset keeps the account, login, course enrollment and payment. It removes every
@@ -92,6 +93,7 @@ async function reset(userId, confirm) {
     prisma.assessmentResult.deleteMany({ where }),
     prisma.attendance.deleteMany({ where }),
     prisma.certificate.deleteMany({ where }),
+    prisma.examSession.deleteMany({ where }),
     prisma.user.update({
       where: { id: user.id },
       data: {
@@ -110,7 +112,7 @@ async function reset(userId, confirm) {
   console.log('Done. After:', await counts(user.id), '— points now 0, off the leaderboard.')
 }
 
-async function createTest(studentName, courseQuery) {
+async function createTest(studentName, courseQuery, allCourses = false) {
   const cohort = selectIntakeCohort(await prisma.cohort.findMany())
   if (!cohort) throw new Error('No open intake cohort')
   const courses = await prisma.course.findMany({ where: { cohortId: cohort.id }, orderBy: { name: 'asc' } })
@@ -131,7 +133,11 @@ async function createTest(studentName, courseQuery) {
       courseId: course.id,
     },
   })
-  console.log({ id: user.id, studentName, password, cohort: cohort.name, course: course.name })
+  if (allCourses) {
+    const others = courses.filter(c => c.id !== course.id)
+    await prisma.enrollment.createMany({ data: others.map(c => ({ studentId: user.id, courseId: c.id })) })
+  }
+  console.log({ id: user.id, studentName, password, cohort: cohort.name, course: course.name, ...(allCourses && { alsoEnrolled: courses.length - 1 }) })
   console.log(`Remove later with: node scripts/student-admin.js delete-test ${user.id}`)
 }
 
@@ -147,7 +153,11 @@ async function deleteTest(userId) {
 
 try {
   if (cmd === 'find' && args.length) await find(args)
-  else if (cmd === 'create-test' && args[0]) await createTest(args[0], args[1])
+  else if (cmd === 'create-test' && args[0]) {
+    const all = args.includes('--all-courses')
+    const [name, course] = args.filter(a => a !== '--all-courses')
+    await createTest(name, course, all)
+  }
   else if (cmd === 'delete-test' && args[0]) await deleteTest(args[0])
   else if (cmd === 'reset' && args[0]) await reset(args[0], args.includes('--confirm'))
   else console.log('usage:\n  node scripts/student-admin.js find "<name>" ["<name>" ...]\n  node scripts/student-admin.js reset <userId> [--confirm]')
